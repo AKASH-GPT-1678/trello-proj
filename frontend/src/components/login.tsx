@@ -8,13 +8,59 @@ export default function Auth() {
     password: "",
   });
 
-  const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async () => {
+    setMode("login");
+    const loginData = {
+      email: formData.email,
+      password: formData.password
+    }
+    const response = await fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginData),
+    });
+    console.log(response);
+    const data = await response.json();
+    return data
+
+  };
+  const handleRegister = async () => {
+    setMode("register");
+
+    const registerData = {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    };
+
+    const response = await fetch("http://localhost:5000/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(registerData),
+    });
+
+    console.log(response);
+
+    const data = await response.json();
+    return data;
+  };
+
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Submitted Data:", formData);
+    if (mode === "login") {
+      handleLogin();
+    } else {
+      handleRegister();
+    }
   };
 
   return (
