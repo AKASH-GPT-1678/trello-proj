@@ -2,9 +2,11 @@ import { BsArrowsAngleContract } from "react-icons/bs";
 import { BsThreeDots } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { IoImages } from "react-icons/io5";
+import React from "react";
 const TaskCard = () => {
+    const [color, setColor] = React.useState('bg-green-200');
     return (
-        <div className="bg-yellow-200  max-w-72 p-4 rounded-2xl">
+        <div className={`${color} w-72 p-4 rounded-2xl`}>
             <div className="flex justify-between items-center ">
                 <p className="ml-1 font-bold text-sm">Today</p>
                 <div className="flex flex-row gap-4 justify-between">
