@@ -2,6 +2,9 @@
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import Testing from './components/testing'
+import Auth from './components/login'
+import NewBoard from './components/boards'
+import TrelloBoard from './components/Trelloboard'
 
 function App() {
 
@@ -10,8 +13,11 @@ function App() {
       <Routes>
         <Route path='/' element={<h1>Home</h1>} />
         <Route path='/test' element={<Testing />} />
-    
-      
+        <Route path='/auth' element={<Auth />} />
+        <Route path='/boards' element={<NewBoard />} />
+        <Route path='board-view' element={<TrelloBoard />} />
+
+
       </Routes>
     </>
   )

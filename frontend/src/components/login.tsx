@@ -18,7 +18,7 @@ export default function Auth() {
       email: formData.email,
       password: formData.password
     }
-    const response = await fetch("http://localhost:5000/login", {
+    const response = await fetch("http://localhost:5000/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -27,6 +27,8 @@ export default function Auth() {
     });
     console.log(response);
     const data = await response.json();
+    console.log(data.token);
+    localStorage.setItem("token", data.token);
     return data
 
   };
@@ -39,7 +41,7 @@ export default function Auth() {
       password: formData.password,
     };
 
-    const response = await fetch("http://localhost:5000/register", {
+    const response = await fetch("http://localhost:5000/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

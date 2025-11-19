@@ -1,5 +1,4 @@
-import AddNewList from "./add-list";
-import TaskCard from "./Taskcard";
+
 
 const ListPage = () => {
     return (
