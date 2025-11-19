@@ -14,9 +14,9 @@ function App() {
     <>
       <Routes>
         <Route path='/' element={<Homepage />} />
-        <Route path='/test' element={<Testing />} />
-        <Route path='/login' element={<Auth />} />
-        <Route path='/boards' element={<NewBoard />} />
+        <Route path='test' element={<Testing />} />
+        <Route path='login' element={<Auth />} />
+        <Route path='boards' element={<NewBoard />} />
         <Route path='board-view' element={<TrelloBoard />} />
 
 

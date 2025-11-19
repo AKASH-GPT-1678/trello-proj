@@ -11,7 +11,7 @@ const TrelloBoard = () => {
       <Header />
       <SubHeader />
       <div className="flex gap-4 ">
-        <TaskCard />
+        <TaskCard listId="1000000" />
         <AddNewList />
         <ListName />
       </div>

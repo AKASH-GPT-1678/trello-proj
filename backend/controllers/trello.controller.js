@@ -4,20 +4,37 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+async function newList(req ,res) {
+    if(!req.user) return res.status(401).json({ message: "Unauthorized" });
+    const { title , boardId } = req.body;
+    try {
 
-async function createTask(req, res) {
-    
-}
-
-async function updateTask(req, res) {
-    
-}
-
-async function deleteTask(req, res) {
-    
-}
-
-async function getTask(req, res) {
+        const board = await prisma.board.findUnique({
+            where: {
+                id : boardId
+            },
+            include: {
+                lists: true
+            }
+        });
+        if(!board) return res.status(404).json({ message: "Board not found" });
+        const newList = await prisma.list.create({
+            data: {
+                title : title,
+                board: {
+                    connect: {
+                        id: board.id
+                    }
+                }
+            }
+        });
+        return res.status(201).json({ message: "List created", list: newList });
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal server error" });
+        
+    }
     
 }
 
@@ -76,5 +93,6 @@ export {
     deleteTask,
     getTask,
     newBoard,
-    getBoards
+    getBoards,
+    newList
 }

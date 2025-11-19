@@ -50,7 +50,7 @@ const NewBoard = () => {
   return (
     <div className="relative p-4">
 
-     <p>tooti footi</p>
+      <p>tooti footi</p>
       <button
         onClick={() => setShowForm(!showForm)}
         className="fixed bottom-6 right-6 bg-blue-600 p-4 rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center"
@@ -83,10 +83,14 @@ const NewBoard = () => {
       )}
 
       {/* Boards Grid */}
-      <div className="w-full p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="w-full p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+       
+
+      >
         {myBoards && myBoards.map((board) => (
           <div
             key={board.id}
+             onClick={() => window.location.href = `/board-view?id=${board.id}`}
             className="bg-white/10 backdrop-blur-lg border cursor-pointer border-white/20 p-4 rounded-xl shadow-md hover:shadow-lg transition"
           >
             <h2 className="text-xl font-semibold mb-2 text-black">
