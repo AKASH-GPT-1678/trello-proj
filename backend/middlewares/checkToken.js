@@ -1,17 +1,9 @@
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
+const JWT_SECRET = process.env.JWT_SECRET;
 
-let JWT_SECRET = process.env.JWT_SECRET;
 export async function verifyToken(token) {
-    try {
-        const verfication = await jwt.verify(token, JWT_SECRET);
-        return verfication
-    } catch (error) {
-        if (error.name === "TokenExpiredError") {
-            return { message: "Token Expired" }
-        } else {
-            return null
-        }
-    }
-
+    return jwt.verify(token, process.env.JWT_SECRET);
 }
+
+

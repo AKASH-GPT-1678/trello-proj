@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET; 
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const registerUser = async (req, res) => {
   try {
@@ -35,11 +35,30 @@ const registerUser = async (req, res) => {
   }
 };
 
+const checkToken = async (req, res) => {
+  console.log(JWT_SECRET);
+  if (!req.user) {
+    console.log("Unauthorized");
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+
+
+    const decoded = req.user;
+
+    return res.status(200).json({ message: "Token valid", user: decoded });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    
+
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
@@ -52,7 +71,7 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    
+
     const token = jwt.sign(
       { id: user.id, email: user.email },
       JWT_SECRET,
@@ -72,5 +91,6 @@ const loginUser = async (req, res) => {
 
 export {
   registerUser,
-  loginUser
+  loginUser,
+  checkToken
 };

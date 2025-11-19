@@ -41,7 +41,8 @@ const NewBoard = () => {
 
     loadMyBoards(token).then((data) => {
       if (data) {
-        setMyBoards(data);
+        console.log(data);
+        setMyBoards(data.boards);
       }
     });
   }, []);
@@ -49,7 +50,7 @@ const NewBoard = () => {
   return (
     <div className="relative p-4">
 
-      {/* Add Board Button */}
+     <p>tooti footi</p>
       <button
         onClick={() => setShowForm(!showForm)}
         className="fixed bottom-6 right-6 bg-blue-600 p-4 rounded-full shadow-lg hover:bg-blue-700 transition flex items-center justify-center"
@@ -86,9 +87,9 @@ const NewBoard = () => {
         {myBoards && myBoards.map((board) => (
           <div
             key={board.id}
-            className="bg-white/10 backdrop-blur-lg border border-white/20 p-4 rounded-xl shadow-md hover:shadow-lg transition"
+            className="bg-white/10 backdrop-blur-lg border cursor-pointer border-white/20 p-4 rounded-xl shadow-md hover:shadow-lg transition"
           >
-            <h2 className="text-xl font-semibold mb-2 text-white">
+            <h2 className="text-xl font-semibold mb-2 text-black">
               {board.title}
             </h2>
 

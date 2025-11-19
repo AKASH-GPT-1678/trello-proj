@@ -1,28 +1,29 @@
 
 import jwt from "jsonwebtoken";
-import { verifyToken } from "./checkToken.js";
 
 const decodeToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
 
-  // If no token is sent, just move on
-  if (!authHeader) {
-    return next();
-  }
+  if (!authHeader) return next();
 
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.split(" ")[1];
+  console.log("TOKEN:", token);
 
   if (!token) {
-    return res.status(401).json({ message: 'Token missing' , status : 401 , verified :false });
+    return res.status(401).json({ message: "Token missing", verified: false });
   }
 
   try {
-    const decoded = await verifyToken(token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // no await needed
     req.user = decoded;
+    console.log("DECODED:", decoded);
     next();
   } catch (err) {
-    return res.status(403).json({ message: 'Invalid or expired token' , status : 403 , verified :false});
+    console.error(err);
+    return res.status(403).json({ message: "Invalid or expired token", verified: false });
   }
 };
 
-export default decodeToken
+
+export default decodeToken;
+

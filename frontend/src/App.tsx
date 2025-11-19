@@ -5,15 +5,17 @@ import Testing from './components/testing'
 import Auth from './components/login'
 import NewBoard from './components/boards'
 import TrelloBoard from './components/Trelloboard'
+import { Home } from 'lucide-react'
+import Homepage from './components/homepage'
 
 function App() {
 
   return (
     <>
       <Routes>
-        <Route path='/' element={<h1>Home</h1>} />
+        <Route path='/' element={<Homepage />} />
         <Route path='/test' element={<Testing />} />
-        <Route path='/auth' element={<Auth />} />
+        <Route path='/login' element={<Auth />} />
         <Route path='/boards' element={<NewBoard />} />
         <Route path='board-view' element={<TrelloBoard />} />
 

@@ -1,6 +1,6 @@
 
 export const createBoard = async (name : string , token : string) => {
-    const response = await fetch("http://localhost:5000/api/newboard", {
+    const response = await fetch("http://localhost:5000/api/boards", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
