@@ -1,6 +1,6 @@
 
 
-import Header from "./Header"
+import Header from "./header"
 import SubHeader from "./Subheader"
 import TrelloBoard from "./Trelloboard"
 const Testing = () => {

@@ -3,17 +3,34 @@ import { FaPlus } from "react-icons/fa6";
 import { IoImages } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import React from "react";
-
+import { type Card } from "../types/board";
 interface TaskCardProps {
     listId: string;
+    listName: string;
+    cards: Card[]
 }
+export const fakeCard: Card = {
+    id: "card_abc123",
+    title: "Complete UI Design",
+    description: "Design the dashboard UI for the analytics module",
+    position: 1,
+    createdAt: "2025-11-20T10:15:00.000Z",
+    updatedAt: "2025-11-20T10:15:00.000Z",
+    listId: "list_xyz789",
+};
 
-const TaskCard = ({ listId }: TaskCardProps) => {
+
+const ListCard = ({ listId, listName, cards }: TaskCardProps) => {
     const [color] = React.useState("bg-green-200");
     const [showCard, setShowCard] = React.useState(true);
+    const [tasks, setTasks] = React.useState<Card[]>(cards);
     const [taskTitle, setTaskTitle] = React.useState("");
 
     const addTask = async () => {
+        fakeCard.title = taskTitle;
+        setTasks([...tasks, fakeCard]);
+
+
         if (!taskTitle.trim()) return;
 
         try {
@@ -23,7 +40,7 @@ const TaskCard = ({ listId }: TaskCardProps) => {
                 return;
             }
 
-            const res = await fetch("http://localhost:5000/task", {
+            const res = await fetch("http://localhost:5000/api/tasks", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -50,11 +67,22 @@ const TaskCard = ({ listId }: TaskCardProps) => {
     return (
         <div className={`${color} w-72 p-4 rounded-2xl`}>
             <div className="flex justify-between items-center">
-                <p className="ml-1 font-bold text-sm">Today</p>
+                <p className="ml-1 font-bold text-sm">{listName}</p>
                 <div className="flex flex-row gap-4">
                     <BsArrowsAngleContract size={15} className="rotate-45" />
                     <BsThreeDots size={15} />
                 </div>
+            </div>
+            <div>
+                {tasks.map((task, index) => (
+                    <div
+                        key={index}
+                        className="flex flex-row gap-2 items-center cursor-pointer hover:bg-yellow-300 rounded-lg w-full p-2"
+                    >
+                        <div className="w-2 h-2 rounded-full bg-gray-800"></div>
+                        <p className="text-sm font-semibold text-gray-800">{task.title}</p>
+                    </div>
+                ))}
             </div>
 
             {showCard ? (
@@ -104,4 +132,4 @@ const TaskCard = ({ listId }: TaskCardProps) => {
     );
 };
 
-export default TaskCard;
+export default ListCard;

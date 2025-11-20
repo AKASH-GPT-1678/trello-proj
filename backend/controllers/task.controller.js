@@ -54,8 +54,49 @@ export async function updateTask(req, res) {
 
 }
 export async function deleteTask(req, res) {
+    try {
 
+        if (!req.user) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const { taskId } = req.body;
+
+        if (!taskId) {
+            return res.status(400).json({
+                message: "taskId is required"
+            });
+        }
+
+        // check if task exists
+        const card = await prisma.card.findUnique({
+            where: { id: taskId }
+        });
+
+        if (!card) {
+            return res.status(404).json({
+                message: "Task not found"
+            });
+        }
+
+        await prisma.card.delete({
+            where: { id: taskId }
+        });
+
+        return res.status(200).json({
+            message: "Task deleted successfully",
+            success: true
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
+    }
 }
+
 
 export async function getTask(req, res) {
 
