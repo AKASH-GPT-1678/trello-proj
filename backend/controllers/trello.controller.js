@@ -31,6 +31,7 @@ export const createBoard = async (boardName) => {
 export const getAllBoards = async () => {
     const TRELLO_API_KEY = process.env.TRELLO_API_KEY;
     const TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN;
+    console.log(TRELLO_API_KEY, TRELLO_API_TOKEN);
 
     try {
         if (!TRELLO_API_KEY || !TRELLO_API_TOKEN) {
@@ -40,10 +41,20 @@ export const getAllBoards = async () => {
         const url = `https://api.trello.com/1/members/me/boards?key=${TRELLO_API_KEY}&token=${TRELLO_API_TOKEN}`;
 
         const response = await axios.get(url);
+        const minimalBoards = response.data.map((b) => ({
+            id: b.id,
+            name: b.name,
+            url: b.url,
+            shortUrl: b.shortUrl,
+
+            idOrganization: b.idOrganization,
+            closed: b.closed,
+        }));
+
 
         return {
             success: true,
-            boards: response.data,
+            boards: minimalBoards,
         };
     } catch (error) {
         return {

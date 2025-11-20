@@ -2,76 +2,37 @@ import React from "react"
 import Header from "./header"
 
 import SubHeader from "./Subheader"
-import { type Board } from "../types/board"
-import { useSearchParams } from "react-router-dom"
+import { type Board } from "../types/board";
+import { useSearchParams } from "react-router-dom";
+
 import ListCard from "./listcard"
 import AddNewList from "./add-list"
-import { io, Socket } from "socket.io-client"
+import { useSocket } from "./socket";
+
 const TrelloBoard = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [boardId, setBoardId] = React.useState("");
-  const [board, setBoard] = React.useState<Board | null>(null);
-  const [socket, setSocket] = React.useState<Socket | null>(null);
-  const id = searchParams.get("id");
-  const token = localStorage.getItem("token");
 
+  const  [searchParams , setSearchParams]= useSearchParams();
+  const boardId = searchParams.get("id");
+  const [board, setBoard] = React.useState<any>(null);
+  const {socket} = useSocket();
   React.useEffect(() => {
-    if (!token) return;
+    if (!boardId) return;
 
-
-    const socket = io('http://localhost:5000', {
-      autoConnect: true,
-    });
-
-    setSocket(socket);
-
-    socket.on('connect', () => {
-      console.log('Connected to server');
-    });
-
-    socket.on('disconnect', () => {
-      console.log('Disconnected from server');
-    });
-
-
-    return () => {
-      socket.disconnect();
+    const fetchBoard = async () => {
+      const res = await fetch(`http://localhost:5000/api/boards/${boardId}/lists`);
+      const data = await res.json();
+      console.log(data);
+      setBoard(data);
     };
 
-  }, []);
-  React.useEffect(() => {
-    if (!id || !token) return;
-
-    const loadBoard = async (boardId: string, token: string) => {
-      try {
-        const response = await fetch(`http://localhost:5000/api/board-view?id=${boardId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) throw new Error("Failed to load board");
-
-        const data = await response.json();
-        setBoard(data.board);
-        return data;
-
-      } catch (error: any) {
-        console.error("Error in loadBoard:", error.message);
-        return null;
-      }
-    };
-
-    loadBoard(id, token);
-
-  }, [id, token]);
+    fetchBoard();
+  }, [boardId]);
 
 
-  if (!id) {
-    return null;
-  }
+
+
+
+
 
   return (
     <div className="h-[100vh] bg-gradient-to-b from-violet-500 to-pink-500 ">
@@ -79,7 +40,7 @@ const TrelloBoard = () => {
       <SubHeader />
       <div className="flex gap-4 ">
         {
-          board?.lists && board.lists.map((list) => (
+          board?.lists && board.lists.map((list :any) => (
             <ListCard key={list.id} listId={list.id} listName={list.title} cards={list.cards} />
           ))
 

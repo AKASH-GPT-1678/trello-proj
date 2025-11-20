@@ -10,12 +10,13 @@ export interface Board {
 }
 
 const NewBoard = () => {
-  const [myBoards, setMyBoards] = React.useState<Board[]>([]);
+  const [myBoards, setMyBoards] = React.useState<any[]>([]);
   const [showForm, setShowForm] = React.useState(false);
   const { socket } = useSocket();
   const loadBoards = async () => {
     socket.emit("load-boards");
-    socket.on("boards-loaded", (boards: Board[]) => {
+    socket.on("boards-loaded", (boards: any) => {
+      console.log(boards);
       setMyBoards(boards);
     });
 
@@ -71,16 +72,14 @@ const NewBoard = () => {
             className="bg-white/10 backdrop-blur-lg border cursor-pointer border-white/20 p-4 rounded-xl shadow-md hover:shadow-lg transition"
           >
             <h2 className="text-xl font-semibold mb-2 text-black">
-              {board.title}
+              {board.name}
             </h2>
 
             <p className="text-sm text-gray-300">
-              Created: {new Date(board.createdAt).toLocaleDateString()}
+             {board.id}
             </p>
 
-            <p className="text-sm text-gray-400">
-              Updated: {new Date(board.updatedAt).toLocaleDateString()}
-            </p>
+         
           </div>
         ))}
       </div>

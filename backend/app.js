@@ -4,7 +4,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 import { createBoard } from './controllers/trello.controller.js';
 import router from './routes/router.js';
-import { configDotenv } from 'dotenv';
+import { getAllBoards } from './controllers/trello.controller.js';
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -35,6 +35,12 @@ io.on("connection", (socket) => {
          createBoard(data).then((response) => {
              console.log(response);
          });
+    
+    });
+    socket.on('load-boards', () => {
+        getAllBoards().then((response) => {
+            socket.emit('boards-loaded', response.boards);
+        });
     });
 
 
