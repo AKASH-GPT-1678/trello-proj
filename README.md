@@ -73,6 +73,21 @@ npm run dev
 npm start
 ```
 
+### 🔑 How to Get Trello API Key & Token
+
+Log in to Trello → https://trello.com
+
+Open: https://trello.com/app-key
+
+Copy your API Key shown on the page.
+
+Scroll down and click "Generate Token".
+
+Allow access → Copy the Token.
+
+Add both to your .env:
+
+
 Create a .env file in the backend root directory:
 ```
 TRELLO_API_KEY=YOUR_TRELLO_API_KEY
