@@ -63,9 +63,15 @@ npm start
 
 Backend Setup
 
-In IntelliJ:
-Run → Edit Configurations → select your Spring Boot app → Environment variables → click ... and add your .env values like:
-DB_HOST=localhost;DB_PORT=5432;DB_NAME=meattruck;DB_USER=postgres;DB_PASS=1234;
+```bash
+cd ..
+cd backend
+npm install
+npm run dev
+# For production
+
+npm start
+```
 
 Create a .env file in the backend root directory:
 ```
