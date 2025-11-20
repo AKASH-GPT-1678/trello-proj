@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useSocket } from "./socket";
 
 export default function CreateBoardForm({ onCreated }: { onCreated?: () => void }) {
     const [title, setTitle] = useState("");
     const [loading, setLoading] = useState(false);
+    const {socket} = useSocket();
 
     async function createBoard(e: React.FormEvent) {
         e.preventDefault();
@@ -11,32 +13,12 @@ export default function CreateBoardForm({ onCreated }: { onCreated?: () => void 
         setLoading(true);
 
         try {
-            const token = localStorage.getItem("token");
+            socket.emit("create-board", title)
 
-            const res = await fetch("http://localhost:5000/api/boards", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ title }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                alert(data.message || "Failed to create board");
-                return;
-            }
-
-            alert("Board created successfully!");
-            setTitle("");
-
-            if (onCreated) onCreated(); // to reload boards if needed
 
         } catch (err) {
             console.error(err);
-            alert("Server error");
+
         } finally {
             setLoading(false);
         }

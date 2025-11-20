@@ -68,7 +68,7 @@ export async function deleteTask(req, res) {
             });
         }
 
-        // check if task exists
+   
         const card = await prisma.card.findUnique({
             where: { id: taskId }
         });
