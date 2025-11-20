@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 import axios from "axios";
-import { getAllBoards } from "../controllers/trello.controller.js";
+
 
 
 
@@ -27,12 +27,12 @@ router.get("/boards/:boardId/lists", async (req, res) => {
 
                 return {
                     ...list,
-                    cards: cardsResponse.data, // attach cards to the list
+                    cards: cardsResponse.data, 
                 };
             })
         );
 
-        // 3️⃣ Return final structure
+    
         return res.json({
             success: true,
             lists: listsWithCards,
