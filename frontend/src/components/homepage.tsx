@@ -4,15 +4,15 @@ import NewBoard from './boards';
 import { useSocket } from './socket';
 const Homepage = () => {
 
-    const {connectSocket} = useSocket();
+    const { connectSocket } = useSocket();
 
     React.useEffect(() => {
         connectSocket();
-     
+
     }, [])
     return (
         <div>
-           <NewBoard />
+            <NewBoard />
 
         </div>
     )

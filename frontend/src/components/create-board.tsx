@@ -14,6 +14,7 @@ export default function CreateBoardForm({ onCreated }: { onCreated?: () => void 
 
         try {
             socket.emit("create-board", title)
+            onCreated?.();
 
 
         } catch (err) {

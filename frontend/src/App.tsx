@@ -2,7 +2,7 @@
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import Testing from './components/testing'
-import Auth from './components/login'
+
 import NewBoard from './components/boards'
 import TrelloBoard from './components/Trelloboard'
 import { Home } from 'lucide-react'
@@ -15,7 +15,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Homepage />} />
         <Route path='test' element={<Testing />} />
-        <Route path='login' element={<Auth />} />
+
         <Route path='boards' element={<NewBoard />} />
         <Route path='board-view' element={<TrelloBoard />} />
 

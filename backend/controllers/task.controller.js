@@ -1,102 +1,64 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
+import axios from "axios";
+export const createTask = async (listId, title) => {
+    const TRELLO_API_KEY = process.env.TRELLO_API_KEY;
+    const TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN;
 
-export async function createTask(req, res) {
     try {
-
-        if (!req.user) {
-            return res.status(401).json({ message: "Unauthorized" });
+        if (!listId || !title) {
+            throw new Error("listId and title are required");
         }
 
-        const { title, listId } = req.body;
+        const url = `https://api.trello.com/1/cards?key=${TRELLO_API_KEY}&token=${TRELLO_API_TOKEN}`;
 
-        if (!title || !listId) {
-            return res.status(400).json({
-                message: "Title and listId are required"
-            });
+        const response = await axios.post(url, {
+            idList: listId,
+            name: title,
+        });
+
+        return {
+            success: true,
+            card: response.data,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error?.response?.data || error.message,
+        };
+    }
+};
+
+
+export const deleteTask = async (cardId) => {
+    const TRELLO_API_KEY = process.env.TRELLO_API_KEY;
+    const TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN;
+
+    try {
+        if (!cardId) {
+            throw new Error("cardId is required");
         }
 
+        const url = `https://api.trello.com/1/cards/${cardId}?key=${TRELLO_API_KEY}&token=${TRELLO_API_TOKEN}`;
 
-        const list = await prisma.list.findUnique({
-            where: { id: listId }
-        });
+        const response = await axios.delete(url);
 
-        if (!list) {
-            return res.status(404).json({
-                message: "List not found"
-            });
-        }
-
-
-        const newCard = await prisma.card.create({
-            data: {
-                title,
-                listId
-            }
-        });
-
-        return res.status(201).json({
-            message: "Task created successfully",
-            card: newCard,
-            success: true
-        });
+        return {
+            success: true,
+            message: "Task deleted from Trello",
+            data: response.data
+        };
 
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            message: "Internal server error",
-            success: false
-        });
+        return {
+            success: false,
+            error: error?.response?.data || error.message
+        };
     }
-}
-export async function updateTask(req, res) {
-    
+};
 
-}
-export async function deleteTask(req, res) {
-    try {
 
-        if (!req.user) {
-            return res.status(401).json({ message: "Unauthorized" });
-        }
-
-        const { taskId } = req.body;
-
-        if (!taskId) {
-            return res.status(400).json({
-                message: "taskId is required"
-            });
-        }
-
-   
-        const card = await prisma.card.findUnique({
-            where: { id: taskId }
-        });
-
-        if (!card) {
-            return res.status(404).json({
-                message: "Task not found"
-            });
-        }
-
-        await prisma.card.delete({
-            where: { id: taskId }
-        });
-
-        return res.status(200).json({
-            message: "Task deleted successfully",
-            success: true
-        });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            message: "Internal server error",
-            success: false
-        });
-    }
-}
-
+export const updateTask = async (taskId, title) => {}
 
 export async function getTask(req, res) {
 

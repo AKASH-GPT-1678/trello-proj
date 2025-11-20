@@ -4,11 +4,14 @@ import { IoImages } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 import React from "react";
 import { type Card } from "../types/board";
+import { useSocket } from "./socket";
+
 interface TaskCardProps {
     listId: string;
     listName: string;
-    cards: Card[]
+    cards : any
 }
+
 export const fakeCard: Card = {
     id: "card_abc123",
     title: "Complete UI Design",
@@ -19,53 +22,31 @@ export const fakeCard: Card = {
     listId: "list_xyz789",
 };
 
-
-const ListCard = ({ listId, listName, cards }: TaskCardProps) => {
-    const [color] = React.useState("bg-green-200");
-    const [showCard, setShowCard] = React.useState(true);
-    const [tasks, setTasks] = React.useState<Card[]>(cards);
+const ListCard = ({ listId, listName , cards }: TaskCardProps) => {
+    const [tasks, setTasks] = React.useState<any[]>(cards);
     const [taskTitle, setTaskTitle] = React.useState("");
+    const [showCard, setShowCard] = React.useState(true);
+    const { socket, connectSocket ,isConnected} = useSocket();
 
     const addTask = async () => {
-        fakeCard.title = taskTitle;
-        setTasks([...tasks, fakeCard]);
+ 
+        socket.emit("create-card", { listId, title: taskTitle });
 
-
-        if (!taskTitle.trim()) return;
-
-        try {
-            const token = localStorage.getItem("token");
-            if (!token) {
-                alert("No token found");
-                return;
-            }
-
-            const res = await fetch("http://localhost:5000/api/tasks", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    title: taskTitle,
-                    listId: listId,
-                }),
-            });
-
-            const data = await res.json();
-            console.log("Task Created:", data);
-
-            // reset UI
-            setTaskTitle("");
-            setShowCard(true);
-
-        } catch (err) {
-            console.error("Error adding task:", err);
-        }
     };
+    const deleteTask = async (cardId : string) => {
+        socket.emit("delete-card", cardId);
+    }
+    React.useEffect(() => {
+        if (!isConnected) {
+            connectSocket();
+        }
+    
+        
+    },[])
 
     return (
-        <div className={`${color} w-72 p-4 rounded-2xl`}>
+        <div className="bg-green-200 w-72 p-4 rounded-2xl">
+            {/* Header */}
             <div className="flex justify-between items-center">
                 <p className="ml-1 font-bold text-sm">{listName}</p>
                 <div className="flex flex-row gap-4">
@@ -73,18 +54,21 @@ const ListCard = ({ listId, listName, cards }: TaskCardProps) => {
                     <BsThreeDots size={15} />
                 </div>
             </div>
-            <div>
-                {tasks.map((task, index) => (
+
+            {/* Existing Cards */}
+            <div className="mt-3">
+                {tasks && tasks.map((task) => (
                     <div
-                        key={index}
-                        className="flex flex-row gap-2 items-center cursor-pointer hover:bg-yellow-300 rounded-lg w-full p-2"
+                        key={task.id}
+                        className="bg-white p-2 rounded-lg shadow-sm mb-2 cursor-pointer hover:bg-gray-100"
+                        onClick={()=>deleteTask(task.id)}
                     >
-                        <div className="w-2 h-2 rounded-full bg-gray-800"></div>
-                        <p className="text-sm font-semibold text-gray-800">{task.title}</p>
+                        <p className="text-sm font-semibold text-gray-800">{task.name}</p>
                     </div>
                 ))}
             </div>
 
+            {/* Add Card Button */}
             {showCard ? (
                 <div className="flex flex-row justify-between mt-4">
                     <div
@@ -111,7 +95,19 @@ const ListCard = ({ listId, listName, cards }: TaskCardProps) => {
 
                     <div className="flex flex-row gap-4 mt-2 items-center">
                         <button
-                            onClick={addTask}
+                            onClick={() => {
+                                if (taskTitle.trim().length === 0) return;
+                                setTasks((prev) => [
+                                    ...prev,
+                                    {
+                                        ...fakeCard,
+                                        id: crypto.randomUUID(),
+                                        title: taskTitle,
+                                    },
+                                ]);
+                                setTaskTitle("");
+                                addTask();
+                            }}
                             className="px-4 py-2 rounded-md text-white text-sm font-bold bg-blue-600 hover:bg-blue-700"
                         >
                             Add Card

@@ -5,6 +5,7 @@ import { Server } from 'socket.io';
 import { createBoard } from './controllers/trello.controller.js';
 import router from './routes/router.js';
 import { getAllBoards } from './controllers/trello.controller.js';
+import { createTask, deleteTask } from './controllers/task.controller.js';
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -41,6 +42,18 @@ io.on("connection", (socket) => {
         getAllBoards().then((response) => {
             socket.emit('boards-loaded', response.boards);
         });
+    });
+    socket.on("create-card", (data) => {
+        console.log(data);
+        createTask(data.listId , data.title).then((response) => {
+            console.log(response);
+        });
+    });
+    socket.on("delete-card", (data) => {
+        console.log(data);
+        deleteTask(data).then((response) => {
+            console.log(response);
+        })
     });
 
 
