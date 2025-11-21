@@ -1,7 +1,9 @@
-import { getAllBoards } from "../controllers/trello.controller";
-
-test("getAllBoards", async () => {
-    const response = await getAllBoards();
-    console.log(response);
-    expect(response.success).toBe(true);
-});
+import { getAllBoards } from "./myboards";
+describe("getAllBoards", () => {
+    it("should get all boards", async () => {
+        const boards = await getAllBoards();
+        expect(boards).toBeDefined();
+        expect(boards.success).toBe(true);
+       
+    })
+})
