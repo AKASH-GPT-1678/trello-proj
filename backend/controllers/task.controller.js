@@ -3,6 +3,7 @@ export const createTask = async (req, res) => {
     const TRELLO_API_KEY = process.env.TRELLO_API_KEY;
     const TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN;
     const { listId, title } = req.body;
+    console.log(listId, title);
 
     try {
         if (!listId || !title) {
@@ -15,6 +16,7 @@ export const createTask = async (req, res) => {
             idList: listId,
             name: title,
         });
+        console.log(response.data);
 
         return res.status(200).json({
             success: true,
@@ -58,5 +60,5 @@ export const deleteTask = async (req, res) => {
 };
 
 
-export const updateTask = async (taskId, title) => {}
+export const updateTask = async (taskId, title) => { }
 
