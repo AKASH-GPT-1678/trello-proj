@@ -1,7 +1,7 @@
 import React from "react";
 import { Plus } from "lucide-react";
 import CreateBoardForm from "./create-board";
-import { useSocket } from "./socket";
+
 export interface Board {
   id: string;
   title: string;
@@ -12,15 +12,27 @@ export interface Board {
 const NewBoard = () => {
   const [myBoards, setMyBoards] = React.useState<any[]>([]);
   const [showForm, setShowForm] = React.useState(false);
-  const { socket } = useSocket();
-  const loadBoards = async () => {
-    socket.emit("load-boards");
-    socket.on("boards-loaded", (boards: any) => {
-      console.log(boards);
-      setMyBoards(boards);
-    });
 
-  }
+  const loadBoards = async () => {
+    try {
+      const reponse = await fetch("http://localhost:5000/api/boards");
+      const data = await reponse.json();
+      if (data.success) {
+        console.log(data);
+    
+      }
+      setMyBoards(data.boards);
+
+    } catch (error) {
+      console.log(error);
+
+    }
+
+  };
+
+  React.useEffect(() => {
+    loadBoards();
+  }, []);
 
 
 
@@ -60,7 +72,7 @@ const NewBoard = () => {
         </div>
       )}
 
-     
+
       <div className="w-full p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
 
 
@@ -76,10 +88,10 @@ const NewBoard = () => {
             </h2>
 
             <p className="text-sm text-gray-300">
-             {board.id}
+              {board.id}
             </p>
 
-         
+
           </div>
         ))}
       </div>

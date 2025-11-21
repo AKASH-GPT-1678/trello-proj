@@ -29,12 +29,46 @@ const ListCard = ({ listId, listName , cards }: TaskCardProps) => {
     const { socket, connectSocket ,isConnected} = useSocket();
 
     const addTask = async () => {
+
+        try {
+
+            const data = {
+                listId : listId,
+                title : taskTitle
+            }
+            const response = await fetch("http://localhost:5000/api/tasks", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+            const task = await response.json();
+            setTasks([...tasks, task]);
+            setTaskTitle("");
+
+            
+        } catch (error) {
+            console.log(error);
+
+            
+        }
  
-        socket.emit("create-card", { listId, title: taskTitle });
+       
 
     };
     const deleteTask = async (cardId : string) => {
-        socket.emit("delete-card", cardId);
+        const response = await fetch(`http://localhost:5000/api/tasks`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({cardId}),
+            
+        });
+        const task = await response.json();
+         console.log(task);
+        
     }
     React.useEffect(() => {
         if (!isConnected) {

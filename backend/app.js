@@ -39,15 +39,10 @@ io.on("connection", (socket) => {
     
     });
     socket.on('load-boards', () => {
-        getAllBoards().then((response) => {
-            socket.emit('boards-loaded', response.boards);
-        });
+        
     });
     socket.on("create-card", (data) => {
-        console.log(data);
-        createTask(data.listId , data.title).then((response) => {
-            console.log(response);
-        });
+        
     });
     socket.on("delete-card", (data) => {
         console.log(data);

@@ -32,13 +32,16 @@ const TrelloBoard = () => {
   const [lists, setLists] = React.useState<TrelloList[]>([]);
 
   React.useEffect(() => {
+    console.log(boardId);
     if (!boardId) return;
+    console.log(boardId);
 
     const fetchBoard = async () => {
-      const res = await fetch(`http://localhost:5000/api/boards/${boardId}/lists`);
+      const res = await fetch(`http://localhost:5000/api/board/${boardId}/lists`);
       const data = await res.json();
+      console.log(data);
       console.log(data.lists);
-      setLists(data.lists);
+      setLists(data.data);
     };
 
     fetchBoard();
@@ -55,8 +58,8 @@ const TrelloBoard = () => {
       <Header />
       <SubHeader />
       <div className="flex gap-4 overflow-x-auto p-4">
-        {lists?.map((list) => (
-          <ListCard key={list.id} listId={list.id} listName={list.name} cards={list.cards} />
+        {lists?.map((list, index) => (
+          <ListCard key={index} listId={list.id} listName={list.name} cards={list.cards} />
         ))}
       </div>
 

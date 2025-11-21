@@ -1,9 +1,8 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
 import axios from "axios";
-export const createTask = async (listId, title) => {
+export const createTask = async (req, res) => {
     const TRELLO_API_KEY = process.env.TRELLO_API_KEY;
     const TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN;
+    const { listId, title } = req.body;
 
     try {
         if (!listId || !title) {
@@ -17,22 +16,23 @@ export const createTask = async (listId, title) => {
             name: title,
         });
 
-        return {
+        return res.status(200).json({
             success: true,
             card: response.data,
-        };
+        });
     } catch (error) {
-        return {
+        return res.status(500).json({
             success: false,
             error: error?.response?.data || error.message,
-        };
+        });
     }
 };
 
 
-export const deleteTask = async (cardId) => {
+export const deleteTask = async (req, res) => {
     const TRELLO_API_KEY = process.env.TRELLO_API_KEY;
     const TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN;
+    const { cardId } = req.body
 
     try {
         if (!cardId) {
@@ -43,23 +43,20 @@ export const deleteTask = async (cardId) => {
 
         const response = await axios.delete(url);
 
-        return {
+        return res.status(200).json({
             success: true,
             message: "Task deleted from Trello",
             data: response.data
-        };
+        });
 
     } catch (error) {
-        return {
+        return res.status(500).json({
             success: false,
             error: error?.response?.data || error.message
-        };
+        });
     }
 };
 
 
 export const updateTask = async (taskId, title) => {}
 
-export async function getTask(req, res) {
-
-}

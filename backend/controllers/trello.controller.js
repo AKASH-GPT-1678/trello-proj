@@ -2,10 +2,11 @@ import axios from "axios";
 
 
 
-export const createBoard = async (boardName) => {
+export const createBoard = async (req, res) => {
     const TRELLO_API_KEY = process.env.TRELLO_API_KEY;
     const TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN;
     console.log(TRELLO_API_KEY, TRELLO_API_TOKEN);
+    const { boardName } = req.body
     try {
         if (!boardName) {
             throw new Error("Board name is required");
@@ -16,19 +17,19 @@ export const createBoard = async (boardName) => {
 
         const response = await axios.post(url);
 
-        return {
+        return res.status(200).json({
             success: true,
             board: response.data,
-        };
+        });
     } catch (error) {
-        return {
+        return res.status(500).json({
             success: false,
             error: error?.response?.data || error.message,
-        };
+        });
     }
 };
 
-export const getAllBoards = async () => {
+export const getAllBoards = async (req, res) => {
     const TRELLO_API_KEY = process.env.TRELLO_API_KEY;
     const TRELLO_API_TOKEN = process.env.TRELLO_API_TOKEN;
     console.log(TRELLO_API_KEY, TRELLO_API_TOKEN);
@@ -52,14 +53,50 @@ export const getAllBoards = async () => {
         }));
 
 
-        return {
+        return res.status(200).json({
             success: true,
             boards: minimalBoards,
-        };
+        });
     } catch (error) {
         return {
             success: false,
             error: error?.response?.data || error.message,
         };
+    }
+};
+export const getListsAndCards = async (req, res) => {
+    const TRELLO_KEY = process.env.TRELLO_API_KEY;
+    const TRELLO_TOKEN = process.env.TRELLO_API_TOKEN;
+    const { boardId } = req.params;
+
+    try {
+
+        const listsUrl = `https://api.trello.com/1/boards/${boardId}/lists?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+        const listsResponse = await axios.get(listsUrl);
+        const lists = listsResponse.data;
+
+        
+        const listsWithCards = await Promise.all(
+            lists.map(async (list) => {
+                const cardsUrl = `https://api.trello.com/1/lists/${list.id}/cards?key=${TRELLO_KEY}&token=${TRELLO_TOKEN}`;
+                const cardsResponse = await axios.get(cardsUrl);
+
+                return {
+                    ...list,
+                    cards: cardsResponse.data,
+                };
+            })
+        );
+
+        return res.status(200).json({
+            success: true,
+            data: listsWithCards,
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            error: err?.response?.data || err.message,
+        });
     }
 };
